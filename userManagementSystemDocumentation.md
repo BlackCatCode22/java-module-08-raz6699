@@ -21,12 +21,12 @@ The app allows you to:
 
 | Feature | Status |
 |--------|--------|
-| Add/Edit/Delete users |
-| Use `localStorage` |
-| Search users |
-| Use confirmation modal |
-| Fetch users from external API |
-| Use Tailwind CSS for styling |
+| Add/Edit/Delete users | ✅ Done |
+| Use `localStorage` | ✅ Done |
+| Search users | ✅ Done |
+| Use confirmation modal | ✅ Done |
+| Fetch users from external API | ✅ Done |
+| Use Tailwind CSS for styling | ✅ Done |
 
 ---
 
