@@ -8,10 +8,10 @@
 		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.dennis</groupId>
-	<artifactId>tues.demo</artifactId>
+	<groupId>com.raz</groupId>
+	<artifactId>dab.demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>tues.demo</name>
+	<name>dab.demo</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>17</java.version>
