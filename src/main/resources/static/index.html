@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(45deg, #a8c0ff, #3f89c9, #f3c0f1, #ffe0a1);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            cursor: url('https://cdn.pixabay.com/photo/2020/07/09/16/15/cursor-5382560_960_720.png'), auto;
+        }
+
+        /* Overlay to make text more visible */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Chat Container */
+        #chatContainer {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-size: 40px;
+            margin-bottom: 30px;
+            animation: bounceIn 1s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Chatbox Styles */
+        #chatbox {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 400px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: #222;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            animation: fadeInChatbox 1s ease-out;
+        }
+
+        @keyframes fadeInChatbox {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Message Bubbles */
+        .user-message, .bot-message {
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            font-size: 16px;
+            line-height: 1.5;
+            animation: bounceInMessage 0.5s ease-out;
+        }
+
+        .user-message {
+            background-color: #6a7fdb;
+            color: white;
+            margin-left: auto;
+            cursor: pointer;
+        }
+
+        .bot-message {
+            background-color: #444;
+            color: white;
+            margin-right: auto;
+            cursor: pointer;
+        }
+
+        @keyframes bounceInMessage {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .user-message:hover, .bot-message:hover {
+            transform: translateY(-5px);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Form styles */
+        form {
+            display: flex;
+            justify-content: space-between;
+            animation: fadeIn 2s ease-out;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border: 2px solid #ff4500;
+            background-color: #fff;
+        }
+
+        button {
+            background-color: #ff4500;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff6347;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            background-color: #ff7f50;
+            transform: translateY(2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 28px;
+            }
+            #chatContainer {
+                width: 95%;
+            }
+            input[type="text"] {
+                width: 70%;
+            }
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            font-style: italic;
+            color: #888;
+            margin: 10px 0;
+        }
+
+        /* Particle Animation */
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: particleAnimation 5s ease-in-out infinite;
+        }
+
+        @keyframes particleAnimation {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<!-- Overlay for dimming the background -->
+<div class="overlay"></div>
+
+<div id="chatContainer">
+    <h1>Chat with AI</h1>
+    <div id="chatbox">
+        <!-- Chat history will appear here -->
+    </div>
+    <div id="typingIndicator" class="typing-indicator"></div>
+    <form id="chatForm">
+        <input type="text" id="message" placeholder="Type your message here" required />
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<!-- Floating particles for extra effect -->
+<script>
+    const numParticles = 50;
+    for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        document.body.appendChild(particle);
+
+        // Set random positions and animations for each particle
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 200 - 100;
+        particle.style.setProperty('--x', `${x}px`);
+        particle.style.setProperty('--y', `${y}px`);
+        particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+    }
+
+    const chatForm = document.getElementById('chatForm');
+    const chatbox = document.getElementById('chatbox');
+    const sessionId = 'user1'; // Replace with a dynamically generated session ID if needed
+    const typingIndicator = document.getElementById('typingIndicator');
+    const messageInput = document.getElementById('message');
+
+    // Play sound effect on send
+    const sendSound = new Audio('https://www.soundjay.com/button/beep-07.wav');
+
+    chatForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const userMessage = messageInput.value;
+
+        // Display the user's message with smooth animation
+        const userMessageElement = document.createElement('p');
+        userMessageElement.classList.add('user-message');
+        userMessageElement.innerHTML = `<strong>You:</strong> ${userMessage}`;
+        chatbox.appendChild(userMessageElement);
+
+        // Play sound
+        sendSound.play();
+
+        // Scroll to the latest message
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        // Show typing indicator
+        typingIndicator.textContent = 'Bot is typing...';
+
+        // Send the message to the chatbot
+        const response = await fetch(`/api/chat/${sessionId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userMessage)
+        });
+        const botReply = await response.text();
+
+        // Hide typing indicator
+        typingIndicator.textContent = '';
+
+        // Display the bot's response with smooth animation
+        const botMessageElement = document.createElement('p');
+        botMessageElement.classList.add('bot-message');
+        botMessageElement.innerHTML = `<strong>Bot:</strong> ${botReply}`;
+        chatbox.appendChild(botMessageElement);
+
+        // Scroll to the latest message
+        chatbox.scrollTop = chatbox.scrollHeight;
+
+        // Clear the input field
+        messageInput.value = '';
+    });
+</script>
+</body>
+</html>
